@@ -2,7 +2,6 @@ package com.bambuser.commerce_sdk_demo_app
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import android.widget.Toast
 import androidx.activity.compose.setContent
