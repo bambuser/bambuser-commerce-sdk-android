@@ -31,12 +31,17 @@ implementation("com.bambuser:commerce-sdk:$insert the latest version")
 
 ## Initialize the SDK
 You need to initialize the SDK before using it.
-In your Application class, add the following code:
+In your Application class, you can create multiple instances of the BambuserSDK:
 ```
-BamBuserSDK.initialize(
+globalBambuserSDK = BambuserSDK(
     applicationContext = this,
     organizationServer = OrganizationServer.US,
-)
+    )
+
+euBambuserSDK = BambuserSDK(
+    applicationContext = this,
+    organizationServer = OrganizationServer.EU,
+    )
 ```
 
 You can choose your organization server from the OrganizationServer enum.
@@ -44,14 +49,14 @@ You can choose your organization server from the OrganizationServer enum.
 * OrganizationServer.EU
 
 ## Create a new view to show a live show
-You need to use the composable function `LiveView`
+You need to use the SDK instance to create a new Live view `sdkInstance.GetLiveView`
 This function would require two mandatory parameters:
 1. `videoConfiguration` - This is the configuration for the video player.
 2. `videoPlayerDelegate` - This is the delegate to receive events and errors.
 
 And some optional parameters:
-3. `modifier` - This is the modifier to apply to the view.
-4. `playerId` - This a unique identifier for the player.
+1`modifier` - This is the modifier to apply to the view.
+2`playerId` - This a unique identifier for the player.
 
 For `videoConfiguration` you need to Initialize a `BambuserVideoConfiguration` object.
 `BambuserVideoConfiguration` takes three mandatory parameters:
@@ -66,3 +71,9 @@ For `videoPlayerDelegate` you need to Initialize a `BambuserVideoPlayerDelegate`
 
 You can decide the logic for handling these events and errors.
 You can put the video activity in PiP, and navigate to different part of your app. 
+
+In `onNewEventReceived` you can receive a reference for some actions you might want the player to do:
+1. `invoke` You want to call one of the player functions, for example to hydrate your products.
+This will require a function name and arguments passed as String.
+2. `notifyView` used if the player is waiting for some inputs from you
+All inputs will be coming with a callback key.
