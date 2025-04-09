@@ -26,7 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.lifecycleScope
 import com.bambuser.commerce_sdk_demo_app.ui.theme.CommerceSDKDemoAppTheme
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -72,10 +74,57 @@ class MainActivity : ComponentActivity() {
                             }) {
                                 Text("Show Live Video")
                             }
+
+                            Spacer(Modifier.height(10.dp))
+
+                            Button(
+                                onClick = {
+                                    trackPurchase()
+                                },
+                            ) {
+                                Text(
+                                    text = "Track purchase",
+                                )
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun trackPurchase() {
+        val application = application as HostApplication
+        val sdkInstance = application.globalBambuserSDK
+        lifecycleScope.launch {
+            sdkInstance.track(
+                eventName = "purchase",
+                data = mapOf(
+                    "purchase" to mapOf(
+                        "id" to "abcd",
+                        "subtotal" to 70.99,
+                        "currency" to "USD",
+                        "total" to 74.98,
+                        "tax" to 14.2,
+                        "shippingCost" to 3.99,
+                        "shippingMethod" to "Store pickup",
+                        "coupon" to "SUMMER_SALE"
+                    ),
+                    "products" to listOf(
+                        mapOf(
+                            "id" to "314-7216-102",
+                            "name" to "Tennis Shoe Classic - Size 10",
+                            "image" to "https://example.com/images/314-7216-102.jpg",
+                            "price" to 70.99,
+                            "currency" to "USD",
+                            "quantity" to 1,
+                            "brand" to "Plausible Co.",
+                            "category" to "Footwear > Sports > Tennis",
+                            "location" to "https://example.com/products/314-7216"
+                        ),
+                    ),
+                ),
+            )
         }
     }
 }
