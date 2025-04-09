@@ -22,7 +22,7 @@ androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"}
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-bambuser-commerce-sdk = { group = "com.bambuser", name = "commerce-sdk", version = "Beta-1.1.1" }
+bambuser-commerce-sdk = { group = "com.bambuser", name = "commerce-sdk", version = "Beta-1.2.1" }
 
 [bundles]
 compose = ["androidx-compose-material3","androidx-compose-activity", "androidx-ui", "androidx-ui-graphics", "androidx-ui-tooling","androidx-ui-tooling-preview"]
