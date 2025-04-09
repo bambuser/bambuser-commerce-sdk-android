@@ -77,3 +77,30 @@ In `onNewEventReceived` you can receive a reference for some actions you might w
 This will require a function name and arguments passed as String.
 2. `notifyView` used if the player is waiting for some inputs from you
 All inputs will be coming with a callback key.
+
+## Conversion tracking
+Bambuser Conversion Tracking for Live Video Shopping gives you the most value out of your Live Shopping performance statistics. 
+The Bambuser Conversion tracker enables merchants to attribute the relevant conversions to the LiveShopping shows. 
+The number of attributed sales will be available on the stats page of each show.
+
+* In order to use the conversion tracking, you need to call the track function that is associated with your SDK instance.
+* The track function is a suspended function that needs to operate under a coroutine scope.
+* The track function takes two mandatory arguments
+  1. `eventName` should be `purchase`
+  2. `data` this is an map for all data needs to be sent, you can find a good example for event data from [here](https://bambuser.com/docs/live/conversion-tracking/)
+
+A simple example:
+```
+lifecycleScope.launch {
+    sdkInstance.track(
+        eventName = "purchase",
+        data = mapOf(
+            "orderId" to "123456",
+            "orderValue" to "12345",
+            "orderProductIds" to listOf("1", "2", "3"),
+            "currency" to "USD",
+        ),
+    )
+}
+```
+  
