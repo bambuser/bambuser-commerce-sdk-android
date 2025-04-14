@@ -103,4 +103,19 @@ lifecycleScope.launch {
     )
 }
 ```
+
+## Picture-in-picture Experience:
+To enable PiP for your video you need to 
+1. Add `android:resizeableActivity="true"` in your AndroidManifest - application block.
+2. Add ```android:supportsPictureInPicture="true" 
+android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"```
+to your AndroidManifest - activity block.
+3. You can either manage your PiP state and add it to `GetLiveView`
+4. Or you can get use of the out of the box solution by extending your activity to `PiPDelegate` and delegate implementation to `PiPDelegateActivity`
+for Example `class LiveActivity : ComponentActivity(), PiPDelegate by PiPDelegateActivity() `
+5. In this case you would need to override:
+   * `enterPiP()` and get the correct aspect ratio
+   * `onPictureInPictureModeChanged` to update the PiP state
+   * `onStop()` to be able to close the video after closing PiP
+You can find a good example in `LiveActivity` implementation.
   
