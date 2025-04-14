@@ -1,8 +1,12 @@
 package com.bambuser.commerce_sdk_demo_app
 
+import android.app.PictureInPictureParams
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
+import android.util.Rational
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,10 +19,12 @@ import com.bambuser.social_commerce_sdk.data.BambuserVideoAsset
 import com.bambuser.social_commerce_sdk.data.BambuserVideoConfiguration
 import com.bambuser.social_commerce_sdk.data.BambuserVideoPlayerDelegate
 import com.bambuser.social_commerce_sdk.data.ViewActions
+import com.bambuser.social_commerce_sdk.ui.data.PiPDelegate
+import com.bambuser.social_commerce_sdk.ui.data.PiPDelegateActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class LiveActivity : ComponentActivity() {
+class LiveActivity : ComponentActivity(), PiPDelegate by PiPDelegateActivity() {
 
     val tag = "LiveActivity"
     private var eventId: String? = null
@@ -140,11 +146,54 @@ class LiveActivity : ComponentActivity() {
                                     Log.d(tag, "onErrorOccurred: $error")
                                 }
                             },
+                            piPState = pipState.value,
                         )
                     }
                 }
             }
         }
+    }
+
+    // Needed only for using PiP delegate
+    override fun enterPiP() {
+        val aspectRatio = Rational(
+            playbackDimensions.value.width,
+            playbackDimensions.value.height,
+        )
+        val params = PictureInPictureParams.Builder()
+            .setAspectRatio(aspectRatio)
+            .build()
+        try {
+            enterPictureInPictureMode(params)
+        } catch (e: Exception) {
+            Log.d(tag, e.message.orEmpty())
+        }
+    }
+
+    // Needed only for using PiP delegate
+    override fun onPictureInPictureModeChanged(
+        isInPictureInPictureMode: Boolean,
+        newConfig: Configuration,
+    ) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        pipState.value = pipState.value.copy(isPipMode = isInPictureInPictureMode)
+    }
+
+    // Needed only for using PiP delegate
+    override fun onStop() {
+        super.onStop()
+        pipState.value = pipState.value.copy(shouldClosePip = true)
+    }
+
+    // Override back press to enable PiP if needed
+    override fun onResume() {
+        super.onResume()
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                enterPiP()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
     }
 
     // An example for what to pass to product hydration function
