@@ -86,6 +86,22 @@ class MainActivity : ComponentActivity() {
                                     text = "Track purchase",
                                 )
                             }
+
+                            Spacer(Modifier.height(10.dp))
+
+                            Button(
+                                onClick = {
+                                    startActivity(
+                                        Intent(this@MainActivity, ViewSystemLiveActivity::class.java).apply {
+                                            putExtra("eventId", text)
+                                        }
+                                    )
+                                },
+                            ) {
+                                Text(
+                                    text = "Open view system",
+                                )
+                            }
                         }
                     }
                 }
