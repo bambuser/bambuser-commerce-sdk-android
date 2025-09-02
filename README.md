@@ -54,6 +54,13 @@ This function would require two mandatory parameters:
 1. `videoConfiguration` - This is the configuration for the video player.
 2. `videoPlayerDelegate` - This is the delegate to receive events and errors.
 
+## Create a new view to show a Shoppable video
+You need to use the SDK instance to create a new Shoppable view `sdkInstance.GetLShoppableVideoView`
+This function would require the same two mandatory parameters:
+1. `videoConfiguration` - This is the configuration for the video player.
+2. `videoPlayerDelegate` - This is the delegate to receive events and errors.
+**Note:** `videoConfiguration` for Shoppable videos is slightly different from Live videos.
+
 And some optional parameters:
 1`modifier` - This is the modifier to apply to the view.
 2`playerId` - This a unique identifier for the player.
@@ -62,7 +69,7 @@ For `videoConfiguration` you need to Initialize a `BambuserVideoConfiguration` o
 `BambuserVideoConfiguration` takes three mandatory parameters:
 1. `events` - This is the list of events you want to receive from the player.
 2. `configuration` - This is the configuration for the video player, you can find more useful configurations in the [documentation](https://bambuser.com/docs/live/player-api-reference/#constants)
-3. `videoType` - You can use `BambuserVideoAsset.Live(id)` passing the id as your show id.
+3. `videoType` - You can use `BambuserVideoAsset.Live(id)` passing the id as your show id, or `BambuserVideoAsset.Shoppable(id)` for shoppable video id.
 
 For `videoPlayerDelegate` you need to Initialize a `BambuserVideoPlayerDelegate` object.
 `BambuserVideoPlayerDelegate` has two methods:
@@ -77,6 +84,40 @@ In `onNewEventReceived` you can receive a reference for some actions you might w
 This will require a function name and arguments passed as String.
 2. `notifyView` used if the player is waiting for some inputs from you
 All inputs will be coming with a callback key.
+3. `switchScreenMode`This is only used for shoppable videos, 
+you can switch between the enums 
+    1.`ScreenMode.FullScreenMode` To enable full screen mode with full layout elements.
+    2.`ScreenMode.PreviewMode` a default light version, you need to pass a specific configuration to this mode.
+
+## Getting a list of shoppable videos
+In order to get a list of shoppable videos, you can use `sdkInstance.getShoppableVideoPlayerCollection`
+This is a suspended function that needs to operate under a coroutine scope.
+This function will throw an exception if the request fails, or any errors happened during the request.
+It retrieves a collection of shoppable videos based on the provided collection information
+It supports fetching videos by playlist ID / page ID or by product SKU.
+
+1.A Simple example for getting a list of shoppable videos by page:
+This call will create a playlist called home if it doesn't exist
+
+```
+getShoppableVideoPlayerCollection(
+    BambuserCollectionInfo.Playlist(
+        pageId = "home",
+        orgId = "$organizationId",
+    ),
+)
+```
+
+2.A Simple example for getting a list of shoppable videos by product SKU:
+
+```
+getShoppableVideoPlayerCollection(
+    BambuserCollectionInfo.SKU(
+        sku = "${product.sku}",
+        orgId = "$organizationId",
+    ),
+)
+```
 
 ## Conversion tracking
 Bambuser Conversion Tracking for Live Video Shopping gives you the most value out of your Live Shopping performance statistics. 
