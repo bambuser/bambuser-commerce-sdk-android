@@ -18,6 +18,8 @@ import com.bambuser.social_commerce_sdk.data.BambuserEventPayload
 import com.bambuser.social_commerce_sdk.data.BambuserVideoAsset
 import com.bambuser.social_commerce_sdk.data.BambuserVideoConfiguration
 import com.bambuser.social_commerce_sdk.data.BambuserVideoPlayerDelegate
+import com.bambuser.social_commerce_sdk.data.BambuserVideoState
+import com.bambuser.social_commerce_sdk.data.PlayerActions
 import com.bambuser.social_commerce_sdk.data.ViewActions
 import com.bambuser.social_commerce_sdk.ui.data.PiPDelegate
 import com.bambuser.social_commerce_sdk.ui.data.PiPDelegateActivity
@@ -144,6 +146,27 @@ class LiveActivity : ComponentActivity(), PiPDelegate by PiPDelegateActivity() {
                                 ) {
                                     // Add your logic here for receiving errors
                                     Log.d(tag, "onErrorOccurred: $error")
+                                }
+
+                                // Optional
+                                override fun onVideoStatusChanged(
+                                    playerId: String,
+                                    state: BambuserVideoState,
+                                    playerActions: PlayerActions,
+                                ) {
+                                    Log.d(tag, "onVideoStatusChanged: $state")
+                                }
+
+                                // Optional
+                                override fun onVideoProgress(
+                                    playerId: String,
+                                    duration: Long,
+                                    currentTime: Long
+                                ) {
+                                    Log.d(
+                                        tag,
+                                        "onVideoProgress: duration: $duration, currentTime: $currentTime"
+                                    )
                                 }
                             },
                             piPState = pipState.value,

@@ -17,6 +17,8 @@ import com.bambuser.social_commerce_sdk.data.BambuserEventPayload
 import com.bambuser.social_commerce_sdk.data.BambuserVideoAsset
 import com.bambuser.social_commerce_sdk.data.BambuserVideoConfiguration
 import com.bambuser.social_commerce_sdk.data.BambuserVideoPlayerDelegate
+import com.bambuser.social_commerce_sdk.data.BambuserVideoState
+import com.bambuser.social_commerce_sdk.data.PlayerActions
 import com.bambuser.social_commerce_sdk.data.ScreenMode
 import com.bambuser.social_commerce_sdk.data.ViewActions
 import kotlinx.coroutines.launch
@@ -93,6 +95,19 @@ class SingleShoppableVideoActivity : ComponentActivity() {
                                         tag,
                                         "onErrorOccurred: playerId: $playerId , error: $error"
                                     )
+                                }
+
+                                // Optional
+                                override fun onVideoStatusChanged(
+                                    playerId: String,
+                                    state: BambuserVideoState,
+                                    playerActions: PlayerActions
+                                ) {
+                                    Log.d(tag, "onVideoStatusChanged: playerId: $playerId , status: $state")
+                                    // If you want video autoplay
+                                    if (state == BambuserVideoState.INITIALIZED) {
+                                        playerActions.play()
+                                    }
                                 }
                             },
                             piPState = null,

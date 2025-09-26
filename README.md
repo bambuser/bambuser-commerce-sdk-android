@@ -75,6 +75,8 @@ For `videoPlayerDelegate` you need to Initialize a `BambuserVideoPlayerDelegate`
 `BambuserVideoPlayerDelegate` has two methods:
 1. `onNewEventReceived` - This is the method to receive events from the player.
 2. `onErrorOccurred` - This is the method to receive errors from the player.
+3. `onVideoStatusChanged` - This is the method to receive the status of the video. very useful if you want to play the video automatically.
+4. `onVideoProgress` - This is the method to receive the progress of the video, very useful for analytics.
 
 You can decide the logic for handling these events and errors.
 You can put the video activity in PiP, and navigate to different part of your app. 
