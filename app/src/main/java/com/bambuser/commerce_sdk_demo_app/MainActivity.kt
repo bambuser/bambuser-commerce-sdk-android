@@ -113,6 +113,20 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
 
+                            Spacer(Modifier.height(10.dp))
+
+                            Button(
+                                onClick = {
+                                    startActivity(
+                                        Intent(this@MainActivity, AutoplayListActivity::class.java)
+                                    )
+                                },
+                            ) {
+                                Text(
+                                    text = "Autoplay horizontal list",
+                                )
+                            }
+
                         }
                     }
                 }
