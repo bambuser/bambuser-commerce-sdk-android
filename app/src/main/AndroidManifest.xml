@@ -23,6 +23,12 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:exported="false"
             android:supportsPictureInPicture="true" />
+
+        <activity
+            android:name=".AutoplayListActivity"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:exported="false"
+            android:supportsPictureInPicture="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
