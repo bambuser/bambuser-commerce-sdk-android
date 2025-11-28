@@ -8,6 +8,11 @@
 - [Removed] -- for now removed features/files
 - [Fixed] -- for any bug fixes
 
+## [2.2.0] - 2025-11-26
+
+### Added
+- Adding mute and un mute functions to PlayerActions.
+
 ## [2.1.1] - 2025-10-06
 
 ### Fixed

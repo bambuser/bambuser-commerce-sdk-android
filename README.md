@@ -79,17 +79,22 @@ For `videoPlayerDelegate` you need to Initialize a `BambuserVideoPlayerDelegate`
 4. `onVideoProgress` - This is the method to receive the progress of the video, very useful for analytics.
 
 You can decide the logic for handling these events and errors.
-You can put the video activity in PiP, and navigate to different part of your app. 
+You can put the video activity in PiP, and navigate to different part of your app.
+Note: `onNewEventReceived` is tightly coupled with the interactive UI layer on top of our video player, so it's not recommended to use it in PiP mode.
 
 In `onNewEventReceived` you can receive a reference for some actions you might want the player to do:
 1. `invoke` You want to call one of the player functions, for example to hydrate your products.
 This will require a function name and arguments passed as String.
 2. `notifyView` used if the player is waiting for some inputs from you
 All inputs will be coming with a callback key.
-3. `switchScreenMode`This is only used for shoppable videos, 
+3. `switchScreenMode` This is only used for shoppable videos, 
 you can switch between the enums 
     1.`ScreenMode.FullScreenMode` To enable full screen mode with full layout elements.
     2.`ScreenMode.PreviewMode` a default light version, you need to pass a specific configuration to this mode.
+
+In `onVideoStatusChanged` You can receive the status of your player, and you will have reference to some player actions
+1. `BambuserVideoState` is an enum class holds all available video states
+2. `PlayerActions` is your interface to remotely control the player, either in the full mode or PiP mode, it should have (play, pause, mute and unMute) actions.
 
 ## Getting a list of shoppable videos
 In order to get a list of shoppable videos, you can use `sdkInstance.getShoppableVideoPlayerCollection`
@@ -161,4 +166,5 @@ for Example `class LiveActivity : ComponentActivity(), PiPDelegate by PiPDelegat
    * `onPictureInPictureModeChanged` to update the PiP state
    * `onStop()` to be able to close the video after closing PiP
 You can find a good example in `LiveActivity` implementation.
+6. Don't rely on `onNewEventReceived` , nor any of the `ViewActions` functions `invoke` , `notifyView` and `switchScreenMode` in PiP mode.
   
