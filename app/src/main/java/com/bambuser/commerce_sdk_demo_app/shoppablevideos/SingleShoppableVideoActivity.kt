@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.bambuser.commerce_sdk_demo_app.HostApplication
 import com.bambuser.commerce_sdk_demo_app.ui.theme.CommerceSDKDemoAppTheme
@@ -39,6 +43,17 @@ class SingleShoppableVideoActivity : ComponentActivity() {
         setContent {
             CommerceSDKDemoAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    val configuration = LocalConfiguration.current
+
+                    // 2. Access the dimensions in DP
+                    val screenHeight: Dp = configuration.screenHeightDp.dp
+                    val screenWidth: Dp = configuration.screenWidthDp.dp
+                    LaunchedEffect(tag) {
+                        Log.d("test", "onCreate: screenHeight: $screenHeight, screenWidth: $screenWidth")
+                    }
+
+
+
                     Box(modifier = Modifier.padding(innerPadding)) {
                         application.globalBambuserSDK.GetLShoppableVideoView(
                             modifier = Modifier.fillMaxSize(),
@@ -54,7 +69,7 @@ class SingleShoppableVideoActivity : ComponentActivity() {
                                     ),
                                     // Configuration for preview mode
                                     "previewConfig" to mapOf(
-                                        "settings" to "products:true; title: false; actions:1; productCardMode: thumbnail",
+                                        "settings" to "products:false; title: false; actions:1; productCardMode: thumbnail",
                                     ),
                                     // Configuration for fullscreen mode
                                     "playerConfig" to mapOf(
@@ -73,7 +88,7 @@ class SingleShoppableVideoActivity : ComponentActivity() {
                                     viewAction: ViewActions
                                 ) {
                                     lifecycleScope.launch {
-                                        Log.d(tag, "onNewEventReceived: $event")
+                                        Log.d("test", "onNewEventReceived: $event")
                                         val type = event.event
                                         when (type) {
                                             "preview-should-expand" -> {

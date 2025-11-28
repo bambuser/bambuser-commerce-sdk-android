@@ -29,6 +29,7 @@ import androidx.compose.foundation.background
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import com.bambuser.commerce_sdk_demo_app.experiences.ExperiencesActivity
 import com.bambuser.commerce_sdk_demo_app.shoppablevideos.ShoppableVideosContainerActivity
 import com.bambuser.commerce_sdk_demo_app.ui.theme.CommerceSDKDemoAppTheme
 import kotlinx.coroutines.launch
@@ -118,12 +119,12 @@ class MainActivity : ComponentActivity() {
                             Button(
                                 onClick = {
                                     startActivity(
-                                        Intent(this@MainActivity, AutoplayListActivity::class.java)
+                                        Intent(this@MainActivity, ExperiencesActivity::class.java)
                                     )
                                 },
                             ) {
                                 Text(
-                                    text = "Autoplay horizontal list",
+                                    text = "Shoppable Experiences",
                                 )
                             }
 

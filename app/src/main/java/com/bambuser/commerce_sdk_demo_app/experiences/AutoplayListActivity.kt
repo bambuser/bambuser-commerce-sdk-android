@@ -1,4 +1,4 @@
-package com.bambuser.commerce_sdk_demo_app
+package com.bambuser.commerce_sdk_demo_app.experiences
 
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
+import com.bambuser.commerce_sdk_demo_app.HostApplication
 import com.bambuser.social_commerce_sdk.BambuserSDK
 import com.bambuser.social_commerce_sdk.data.BambuserCollection
 import com.bambuser.social_commerce_sdk.data.BambuserCollectionInfo
@@ -42,6 +43,7 @@ import com.bambuser.social_commerce_sdk.data.PlayerActions
 import com.bambuser.social_commerce_sdk.data.ViewActions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class AutoplayListActivity : ComponentActivity() {
 
@@ -98,7 +100,7 @@ fun HorizontalVideoFeed(
             val viewportCentre = layoutInfo.viewportEndOffset / 2
             visibleItems.minByOrNull {
                 val itemCentre = it.offset + it.size / 2
-                kotlin.math.abs(itemCentre - viewportCentre)
+                abs(itemCentre - viewportCentre)
             }?.index ?: -1
         }
     }
