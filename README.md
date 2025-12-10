@@ -11,7 +11,7 @@ This SDK uses Compose BOM version 2025.02.00
 
 First, add a new maven repository to your dependency resolution management:
 
-```
+```kotlin
 repositories {
         google()
         mavenCentral()
@@ -25,14 +25,14 @@ repositories {
 
 Then add the dependency into your `app/build.gradle`:
 
-```
-implementation("com.bambuser:commerce-sdk:$insert the latest version")
+```kotlin
+implementation("com.bambuser:commerce-sdk:${insert_the_latest_version}")
 ```
 
 ## Initialize the SDK
 You need to initialize the SDK before using it.
 In your Application class, you can create multiple instances of the BambuserSDK:
-```
+```kotlin
 globalBambuserSDK = BambuserSDK(
     applicationContext = this,
     organizationServer = OrganizationServer.US,
@@ -106,7 +106,7 @@ It supports fetching videos by playlist ID / page ID or by product SKU.
 1.A Simple example for getting a list of shoppable videos by page:
 This call will create a playlist called home if it doesn't exist
 
-```
+```kotlin
 getShoppableVideoPlayerCollection(
     BambuserCollectionInfo.Playlist(
         pageId = "home",
@@ -117,7 +117,7 @@ getShoppableVideoPlayerCollection(
 
 2.A Simple example for getting a list of shoppable videos by product SKU:
 
-```
+```kotlin
 getShoppableVideoPlayerCollection(
     BambuserCollectionInfo.SKU(
         sku = "${product.sku}",
@@ -138,7 +138,7 @@ The number of attributed sales will be available on the stats page of each show.
   2. `data` this is an map for all data needs to be sent, you can find a good example for event data from [here](https://bambuser.com/docs/live/conversion-tracking/)
 
 A simple example:
-```
+```kotlin
 lifecycleScope.launch {
     sdkInstance.track(
         eventName = "purchase",
@@ -167,4 +167,13 @@ for Example `class LiveActivity : ComponentActivity(), PiPDelegate by PiPDelegat
    * `onStop()` to be able to close the video after closing PiP
 You can find a good example in `LiveActivity` implementation.
 6. Don't rely on `onNewEventReceived` , nor any of the `ViewActions` functions `invoke` , `notifyView` and `switchScreenMode` in PiP mode.
-  
+
+### Preloading
+
+By default, the SDK **preloads videos** to reduce startup time when playback begins. This ensures a smoother user experience by minimizing delays when calling `play` on a video.
+
+If you prefer to **disable automatic preloading**, you can set the `preload` flag to `false` in your video configuration:
+
+```kotlin
+"preload" to false
+```

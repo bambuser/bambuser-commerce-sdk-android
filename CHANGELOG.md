@@ -8,6 +8,11 @@
 - [Removed] -- for now removed features/files
 - [Fixed] -- for any bug fixes
 
+## [2.2.0] - 2025-12-10
+
+### Added
+- Adding support to video pre-loading configuration.
+
 ## [2.2.0] - 2025-11-26
 
 ### Added
