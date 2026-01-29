@@ -1,13 +1,13 @@
 [versions]
-agp = "8.8.2"
-kotlin = "2.0.21"
-coreKtx = "1.15.0"
-appcompat = "1.7.0"
-activity = "1.10.1"
-composeBom = "2025.03.01"
-composeActivity = "1.10.1"
-lifecycleRuntimeKtx = "2.8.7"
-material = "1.12.0"
+agp = "9.0.0"
+kotlin = "2.3.0"
+coreKtx = "1.17.0"
+appcompat = "1.7.1"
+activity = "1.12.3"
+composeBom = "2026.01.01"
+composeActivity = "1.12.3"
+lifecycleRuntimeKtx = "2.10.0"
+material = "1.13.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -22,7 +22,7 @@ androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview"}
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-bambuser-commerce-sdk = { group = "com.bambuser", name = "commerce-sdk", version = "2.3.0" }
+bambuser-commerce-sdk = { group = "com.bambuser", name = "commerce-sdk", version = "2.4.0" }
 
 [bundles]
 compose = ["androidx-compose-material3","androidx-compose-activity", "androidx-ui", "androidx-ui-graphics", "androidx-ui-tooling","androidx-ui-tooling-preview"]
@@ -32,5 +32,3 @@ compose = ["androidx-compose-material3","androidx-compose-activity", "androidx-u
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-
-
