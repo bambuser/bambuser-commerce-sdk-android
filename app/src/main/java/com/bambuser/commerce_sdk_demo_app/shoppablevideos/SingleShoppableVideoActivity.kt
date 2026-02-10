@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 class SingleShoppableVideoActivity : ComponentActivity() {
 
     val tag = "SingleShoppableVideoActivity"
-    private var videoId = "puv_sxSLL9s5K16wDNZNuqVjvk"
+    private val videoId by lazy { intent.getStringExtra("videoId") ?: "puv_sxSLL9s5K16wDNZNuqVjvk" }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -54,7 +54,7 @@ class SingleShoppableVideoActivity : ComponentActivity() {
                                     ),
                                     // Configuration for preview mode
                                     "previewConfig" to mapOf(
-                                        "settings" to "products:true; title: false; actions:1; productCardMode: thumbnail",
+                                        "settings" to "products:true; title: true; actions:1; productCardMode: thumbnail",
                                     ),
                                     // Configuration for fullscreen mode
                                     "playerConfig" to mapOf(
@@ -103,7 +103,10 @@ class SingleShoppableVideoActivity : ComponentActivity() {
                                     state: BambuserVideoState,
                                     playerActions: PlayerActions
                                 ) {
-                                    Log.d(tag, "onVideoStatusChanged: playerId: $playerId , status: $state")
+                                    Log.d(
+                                        tag,
+                                        "onVideoStatusChanged: playerId: $playerId , status: $state"
+                                    )
                                     // If you want video autoplay
                                     if (state == BambuserVideoState.INITIALIZED) {
                                         playerActions.play()
