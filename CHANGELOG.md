@@ -8,6 +8,11 @@
 - [Removed] -- for now removed features/files
 - [Fixed] -- for any bug fixes
 
+## [2.5.0] - 2026-2-09
+
+### Added
+- Support to playback speed rate control
+
 ## [2.2.0] - 2025-12-10
 
 ### Added

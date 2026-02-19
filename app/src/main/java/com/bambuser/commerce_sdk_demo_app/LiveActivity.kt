@@ -59,10 +59,11 @@ class LiveActivity : ComponentActivity(), PiPDelegate by PiPDelegateActivity() {
                                     "currency" to "USD", // Mandatory for product hydration
                                     "autoplay" to false,
                                     // If you want to hide ui buttons
-//                                    "ui" to mapOf(
+                                    "ui" to mapOf(
+                                        "hidePlaybackRateButton" to false, // To enable playback speed rate
 //                                        "hideShareButton" to true,
 //                                        "hideEmojiOverlay" to true,
-//                                    )
+                                    )
                                 ),
                                 // Pass the asset you want to play, we support only Live for now
                                 videoType = BambuserVideoAsset.Live(id),
