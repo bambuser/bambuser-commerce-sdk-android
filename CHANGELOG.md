@@ -8,6 +8,11 @@
 - [Removed] -- for now removed features/files
 - [Fixed] -- for any bug fixes
 
+
+## [2.6.0] - 2026-2-26
+### Added
+- Internal fixes and improvements
+
 ## [2.5.0] - 2026-2-09
 
 ### Added
