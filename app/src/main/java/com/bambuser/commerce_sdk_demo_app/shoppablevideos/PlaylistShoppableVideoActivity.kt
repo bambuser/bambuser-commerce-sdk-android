@@ -16,7 +16,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.bambuser.commerce_sdk_demo_app.HostApplication
@@ -48,11 +49,8 @@ class PlaylistShoppableVideoActivity : ComponentActivity() {
             try {
                 val response = application.globalBambuserSDK.getShoppableVideoPlayerCollection(
                     BambuserCollectionInfo.Playlist(
-                        containerId = "best-sellers",
-                        pageId = "mobile-home",
+                        componentId = "mobile-sdk-tests",
                         orgId = "BdTubpTeJwzvYHljZiy4",
-                        // only needed for backward compatibility, don't add it if it's a new playlist.
-                        packageName = "com.bambuser.commerce.sdk.demo",
                     ),
                 )
                 bambuserCollectionStateFlow.value = response
@@ -66,9 +64,10 @@ class PlaylistShoppableVideoActivity : ComponentActivity() {
             val collection = bambuserCollectionStateFlow.collectAsState()
 
             collection.value?.let { collection ->
-                val configuration = LocalConfiguration.current
-                val screenWidth = configuration.screenWidthDp.dp
-                val screenHeight = configuration.screenHeightDp.dp
+                val windowInfo = LocalWindowInfo.current
+                val density = LocalDensity.current
+                val screenWidth = with(density) { windowInfo.containerSize.width.toDp() }
+                val screenHeight = with(density) { windowInfo.containerSize.height.toDp() }
 
                 val itemWidth = screenWidth / 2
                 val itemHeight = screenHeight / 2

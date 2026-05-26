@@ -9,6 +9,22 @@
 - [Fixed] -- for any bug fixes
 
 
+## [3.0.0] -2026-5-26
+### Added
+- `componentId` support to `BambuserCollectionInfo.Playlist`.
+
+### Changed
+- Bump compileSdk and targetSdk to 36.
+
+### Removed
+- `playerId` parameter from `GetLiveView` and `GetLShoppableVideoView`.
+
+### Deprecated
+- `pageId`, `containerId`, and `title` fields in `BambuserCollectionInfo.Playlist`.
+
+### Fixed
+- Some internal improvements and bug fixes
+
 ## [2.6.0] - 2026-2-26
 ### Added
 - Internal fixes and improvements
