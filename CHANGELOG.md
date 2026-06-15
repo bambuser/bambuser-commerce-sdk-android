@@ -9,6 +9,10 @@
 - [Fixed] -- for any bug fixes
 
 
+## [3.1.0] 2026-6-15
+### Fixed
+- Fix malformed event error when a player event's `event` payload is not a JSON object, safely handling array (`"list"`), primitive (`"value"`), and null payloads, as well as non-string `type` and `callbackKey` fields.
+
 ## [3.0.0] -2026-5-26
 ### Added
 - `componentId` support to `BambuserCollectionInfo.Playlist`.
