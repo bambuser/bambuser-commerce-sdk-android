@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.bambuser.commerce_sdk_demo_app"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.bambuser.commerce_sdk_demo_app"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
