@@ -9,6 +9,10 @@
 - [Fixed] -- for any bug fixes
 
 
+## [3.2.0] - 2026-06-26
+### Added
+- `seek(to: Long)` function to `PlayerActions` and `BamPlayerViewModel` to seek the player to a given position.
+
 ## [3.1.0] 2026-6-15
 ### Fixed
 - Fix malformed event error when a player event's `event` payload is not a JSON object, safely handling array (`"list"`), primitive (`"value"`), and null payloads, as well as non-string `type` and `callbackKey` fields.
