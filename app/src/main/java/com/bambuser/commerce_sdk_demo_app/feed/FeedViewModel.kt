@@ -10,6 +10,7 @@ import com.bambuser.commerce_sdk_demo_app.data.Storage
 import com.bambuser.commerce_sdk_demo_app.ui.UiState
 import com.bambuser.social_commerce_sdk.data.BambuserCollectionInfo
 import com.bambuser.social_commerce_sdk.data.BambuserEventPayload
+import com.bambuser.social_commerce_sdk.data.VideoMetadata
 import com.bambuser.social_commerce_sdk.data.ViewActions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,8 +24,8 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
 
     private val sdkInstance = (application as HostApplication).globalBambuserSDK
 
-    private val _uiState = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
-    val uiState: StateFlow<UiState<List<String>>> = _uiState
+    private val _uiState = MutableStateFlow<UiState<List<VideoMetadata>>>(UiState.Loading)
+    val uiState: StateFlow<UiState<List<VideoMetadata>>> = _uiState
 
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents: SharedFlow<NavigationEvent> = _navigationEvents
@@ -44,13 +45,13 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                val collection = sdkInstance.getShoppableVideoPlayerCollection(
+                    val collection = sdkInstance.getShoppableVideoPlayerCollectionMetadata(
                     BambuserCollectionInfo.Playlist(
                         componentId = COMPONENT_ID,
                         orgId = ORG_ID,
                     )
                 )
-                _uiState.value = UiState.Content(collection.videoIdList)
+                _uiState.value = UiState.Content(collection.videoMetadataList)
             } catch (e: Exception) {
                 Log.d(TAG, "Failed to load feed: $e")
                 _uiState.value = UiState.Error(e.message ?: "Failed to load feed")

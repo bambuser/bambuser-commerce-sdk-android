@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.VerticalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.CircularProgressIndicator
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +37,7 @@ import com.bambuser.social_commerce_sdk.data.BambuserVideoPlayerDelegate
 import com.bambuser.social_commerce_sdk.data.BambuserVideoState
 import com.bambuser.social_commerce_sdk.data.PlayerActions
 import com.bambuser.social_commerce_sdk.data.ScreenMode
+import com.bambuser.social_commerce_sdk.data.VideoMetadata
 import com.bambuser.social_commerce_sdk.data.ViewActions
 
 private const val TAG = "FeedScreen"
@@ -80,8 +83,8 @@ fun FeedScreen(
             }
 
             is UiState.Content -> {
-                val videoIds = state.data
-                if (videoIds.isEmpty()) {
+                val videos = state.data
+                if (videos.isEmpty()) {
                     Text(
                         text = "No videos\nCheck back soon.",
                         modifier = Modifier.align(Alignment.Center),
@@ -90,7 +93,7 @@ fun FeedScreen(
                         textAlign = TextAlign.Center,
                     )
                 } else {
-                    FeedPager(videoIds = videoIds, viewModel = viewModel)
+                    FeedPager(videos = videos, viewModel = viewModel)
                 }
             }
         }
@@ -98,11 +101,11 @@ fun FeedScreen(
 }
 
 @Composable
-private fun FeedPager(videoIds: List<String>, viewModel: FeedViewModel) {
+private fun FeedPager(videos: List<VideoMetadata>, viewModel: FeedViewModel) {
     val application = LocalContext.current.applicationContext as HostApplication
     val sdkInstance = application.globalBambuserSDK
 
-    val pagerState = rememberPagerState(pageCount = { videoIds.size })
+    val pagerState = rememberPagerState(pageCount = { videos.size })
     val isModalOpen by viewModel.isModalOpen.collectAsState()
 
     val videoPlayerDelegate = remember {
@@ -157,33 +160,47 @@ private fun FeedPager(videoIds: List<String>, viewModel: FeedViewModel) {
         // instead of swiping the pager to the next video.
         userScrollEnabled = !isModalOpen,
     ) { page ->
-        sdkInstance.GetLShoppableVideoView(
-            videoConfiguration = BambuserVideoPlayerConfiguration(
-                events = listOf("*"),
-                configuration = mapOf(
-                    "preload" to true,
-                    "thumbnail" to mapOf(
-                        "enabled" to true,
-                        "showPlayButton" to true,
-                        "contentMode" to "scaleAspectFill",
-                        "showLoadingIndicator" to true,
+        val video = videos[page]
+        Box(modifier = Modifier.fillMaxSize()) {
+            sdkInstance.GetLShoppableVideoView(
+                videoConfiguration = BambuserVideoPlayerConfiguration(
+                    events = listOf("*"),
+                    configuration = mapOf(
+                        "preload" to true,
+                        "thumbnail" to mapOf(
+                            "enabled" to true,
+                            "showPlayButton" to true,
+                            "contentMode" to "scaleAspectFill",
+                            "showLoadingIndicator" to true,
+                        ),
+                        "previewConfig" to mapOf(
+                            "productAction" to "modal",
+                            "closedCaptions" to "original",
+                            "settings" to "products:true; title:false; actions:true; productCardMode: thumbnail; autoplay:true",
+                        ),
+                        "playerConfig" to mapOf(
+                            "buttons" to mapOf("dismiss" to "event"),
+                            "enableTrackingPoint" to false,
+                            "currency" to "SEK",
+                            "locale" to "en-US",
+                        ),
                     ),
-                    "previewConfig" to mapOf(
-                        "productAction" to "modal",
-                        "closedCaptions" to "original",
-                        "settings" to "products:true; title:false; actions:true; productCardMode: thumbnail; autoplay:true",
-                    ),
-                    "playerConfig" to mapOf(
-                        "buttons" to mapOf("dismiss" to "event"),
-                        "enableTrackingPoint" to false,
-                        "currency" to "SEK",
-                        "locale" to "en-US",
-                    ),
+                    videoType = BambuserVideoAsset.Shoppable(video.videoId),
                 ),
-                videoType = BambuserVideoAsset.Shoppable(videoIds[page]),
-            ),
-            videoPlayerDelegate = videoPlayerDelegate,
-        )
+                videoPlayerDelegate = videoPlayerDelegate,
+            )
+
+            video.title?.takeIf { it.isNotBlank() }?.let { title ->
+                Text(
+                    text = title,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(16.dp),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+                )
+            }
+        }
     }
 }
 
