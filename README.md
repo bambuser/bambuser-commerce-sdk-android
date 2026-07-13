@@ -97,17 +97,23 @@ In `onVideoStatusChanged` You can receive the status of your player, and you wil
 2. `PlayerActions` is your interface to remotely control the player, either in the full mode or PiP mode, it should have (play, pause, mute and unMute) actions.
 
 ## Getting a list of shoppable videos
-In order to get a list of shoppable videos, you can use `sdkInstance.getShoppableVideoPlayerCollection`
+In order to get a list of shoppable videos, you can use `sdkInstance.getShoppableVideoPlayerCollectionMetadata`
 This is a suspended function that needs to operate under a coroutine scope.
 This function will throw an exception if the request fails, or any errors happened during the request.
 It retrieves a collection of shoppable videos based on the provided collection information
 It supports fetching videos by playlist ID / page ID or by product SKU.
 
+It returns a `BambuserCollectionMetadata` object, which holds:
+* `videoMetadataList` - a list of `VideoMetadata`, one per video, with `videoId`, `preview`, `title`, `length`, and `hasAudio`.
+* `pagination` - pagination information for the collection.
+
+**Note:** `getShoppableVideoPlayerCollection` is deprecated in favor of `getShoppableVideoPlayerCollectionMetadata`.
+
 1.A Simple example for getting a list of shoppable videos by page:
 This call will create a playlist called home if it doesn't exist
 
 ```kotlin
-getShoppableVideoPlayerCollection(
+getShoppableVideoPlayerCollectionMetadata(
     BambuserCollectionInfo.Playlist(
         pageId = "home",
         orgId = "$organizationId",
@@ -118,7 +124,7 @@ getShoppableVideoPlayerCollection(
 2.A Simple example for getting a list of shoppable videos by product SKU:
 
 ```kotlin
-getShoppableVideoPlayerCollection(
+getShoppableVideoPlayerCollectionMetadata(
     BambuserCollectionInfo.SKU(
         sku = "${product.sku}",
         orgId = "$organizationId",
