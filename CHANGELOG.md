@@ -9,6 +9,13 @@
 - [Fixed] -- for any bug fixes
 
 
+## [3.3.0] - 2026-07-13
+### Added
+- `getShoppableVideoPlayerCollectionMetadata` to `BambuserSDK` for retrieving collection metadata (`BambuserCollectionMetadata` with per-video `VideoMetadata`), supporting fetching by playlist/page ID or by SKU.
+
+### Deprecated
+- `getShoppableVideoPlayerCollection` in favor of `getShoppableVideoPlayerCollectionMetadata`.
+
 ## [3.2.0] - 2026-06-26
 ### Added
 - `seek(to: Long)` function to `PlayerActions` and `BamPlayerViewModel` to seek the player to a given position.
