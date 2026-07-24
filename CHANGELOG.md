@@ -9,6 +9,12 @@
 - [Fixed] -- for any bug fixes
 
 
+## [3.4.0] - 2026-07-24
+### Fixed
+- Fix video thumbnail glitch
+- Enhance event tracking
+
+
 ## [3.3.0] - 2026-07-13
 ### Added
 - `getShoppableVideoPlayerCollectionMetadata` to `BambuserSDK` for retrieving collection metadata (`BambuserCollectionMetadata` with per-video `VideoMetadata`), supporting fetching by playlist/page ID or by SKU.
