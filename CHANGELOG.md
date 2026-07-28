@@ -8,6 +8,9 @@
 - [Removed] -- for now removed features/files
 - [Fixed] -- for any bug fixes
 
+## [3.4.1] - 2026-07-28
+### Removed
+- Leftover launcher icon resources.
 
 ## [3.4.0] - 2026-07-24
 ### Fixed
