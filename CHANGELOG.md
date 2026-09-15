@@ -8,6 +8,10 @@
 - [Removed] -- for now removed features/files
 - [Fixed] -- for any bug fixes
 
+## [3.7.0] - 2026-09-15
+### Added
+- The player UI now follows the system font size accessibility setting. The player's root font size (chat, product tiles, and overlays) scales with the user's chosen font size, including the non-linear scaling curve on Android 14+, and updates live when the setting is changed while a player is open. No integration work is required.
+
 ## [3.6.0] - 2026-09-04
 ### Added
 - `videoScaleMode` on `BambuserVideoConfiguration`, for both live and shoppable videos. `BambuserVideoScaleMode.FILL` makes the video cover the whole player view, keeping its aspect ratio and cropping the overflow. `FIT` is the default and keeps the existing letterboxed behavior. Only the video is affected; the player's controls and overlays are unchanged. Existing integrations are unaffected: the parameter is last and defaults to `FIT`. For full-bleed video, pair `FILL` with a player view that applies no system bar padding of its own, and hide the system bars in the host activity so they do not cover the player's own controls.
