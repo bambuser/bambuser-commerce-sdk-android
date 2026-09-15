@@ -8,6 +8,13 @@
 - [Removed] -- for now removed features/files
 - [Fixed] -- for any bug fixes
 
+## [3.6.0] - 2026-09-04
+### Added
+- `videoScaleMode` on `BambuserVideoConfiguration`, for both live and shoppable videos. `BambuserVideoScaleMode.FILL` makes the video cover the whole player view, keeping its aspect ratio and cropping the overflow. `FIT` is the default and keeps the existing letterboxed behavior. Only the video is affected; the player's controls and overlays are unchanged. Existing integrations are unaffected: the parameter is last and defaults to `FIT`. For full-bleed video, pair `FILL` with a player view that applies no system bar padding of its own, and hide the system bars in the host activity so they do not cover the player's own controls.
+
+### Fixed
+- The soft keyboard no longer covers the player's chat input.
+
 ## [3.5.0] - 2026-08-19
 ### Added
 - `BambuserCollectionInfo.GroupId(orgId, groupId)` for fetching a shoppable video collection by product item group ID, alongside the existing playlist/page ID and SKU options.
