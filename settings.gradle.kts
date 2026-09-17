@@ -26,6 +26,11 @@ dependencyResolutionManagement {
     }
 }
 
+val localReposScript = file("local.repositories.gradle.kts")
+if (localReposScript.exists()) {
+    apply(from = localReposScript)
+}
+
 rootProject.name = "Commerce SDK Demo App"
 include(":app")
 
