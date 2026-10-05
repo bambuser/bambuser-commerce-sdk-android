@@ -8,6 +8,23 @@
 - [Removed] -- for now removed features/files
 - [Fixed] -- for any bug fixes
 
+## [4.0.0] - 2026-10-05
+### Added
+- `BambuserSDK.GetAppearanceView(videoConfiguration, videoPlayerDelegate, pageSize, appearanceDelegate, state, modifier)`, a composable that renders a collection of shoppable videos with the appearance configured in Bam Hub. The layout follows the appearance's `mode` (grid, row, story or fab); sizing, spacing, autoplay, tap behavior and the soft limit come from the appearance, and further pages load as the user scrolls.
+  - The configuration's `videoType` must be a `BambuserCollectionInfo`: `Playlist` renders a placement with its appearance, `SKU` and `GroupId` render the videos of a product or a product group. Any other type throws `IllegalArgumentException`.
+  - `configuration["playerConfig"]` overrides appearance keys with the names the hub uses, ignoring null and blank values; its other entries, for example `currency`, `locale` or `buttons`, reach every player's web configuration unchanged.
+  - `configuration["thumbnail"]` tunes every player's preview thumbnail with the keys a single shoppable player accepts. `configuration["preload"]` controls whether players boot behind their thumbnail. Any other top-level key is copied into every player's configuration.
+  - `events` and `videoScaleMode` apply to every player in the collection, inline and fullscreen.
+- `BambuserCollectionInfo` now implements `BambuserVideoType`, so it can be the `videoType` of a `BambuserVideoConfiguration`.
+- `rememberBambuserAppearanceViewState()` and `BambuserAppearanceViewState`, a Compose state handle exposing the resolved `mode`, the loaded `videoIds` and the current `pagination`.
+- `BambuserAppearanceViewDelegate` for placement-level events: `onWillLoadPage`, `onPageLoaded`, `onPageFailedToLoad`, `onPlayerSelected`, `onEnterFullscreen`, `onExitFullscreen`, `onCurrentChanged` and `onDismiss`. All methods have empty defaults. Item callbacks carry a `BambuserAppearanceItem` with the video's index, player id and `VideoMetadata`.
+
+### Changed
+- **Breaking:** `videoScaleMode` on `BambuserVideoConfiguration` is now nullable and defaults to `null`. A value set by the integrator always wins. When left unset, the video follows the scale mode requested by the player's resize events, falling back to `FIT` until the first one arrives. To keep the previous always-fit framing, set `videoScaleMode = BambuserVideoScaleMode.FIT` explicitly. Kotlin code that reads `videoScaleMode` as non-null (for example an exhaustive `when` without a `null` branch) needs a `null` case.
+
+### Fixed
+- Resize events from the web player that carry no dimensions are ignored. They are sent while the player switches between its preview and full UI, and previously collapsed the video view for a moment until the next resize arrived, which showed as a flash when a player expanded to fullscreen.
+
 ## [3.7.0] - 2026-09-15
 ### Added
 - The player UI now follows the system font size accessibility setting. The player's root font size (chat, product tiles, and overlays) scales with the user's chosen font size, including the non-linear scaling curve on Android 14+, and updates live when the setting is changed while a player is open. No integration work is required.

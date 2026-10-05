@@ -3,8 +3,10 @@
 ## About
 This Android application demonstrates how to integrate and utilize the Bambuser Commerce SDK to display live shopping shows within your app.
 
+**Current SDK version:** 4.0.0 (released 2026-10-05).
+
 ## Requirements
-This SDK targets Android 35, and the minimal support API is 26 (Android 8+)
+This SDK targets Android 36, and the minimal support API is 26 (Android 8+)
 This SDK uses Compose BOM version 2025.02.00
 
 ## Setup
@@ -69,7 +71,10 @@ For `videoConfiguration` you need to Initialize a `BambuserVideoConfiguration` o
 `BambuserVideoConfiguration` takes three mandatory parameters:
 1. `events` - This is the list of events you want to receive from the player.
 2. `configuration` - This is the configuration for the video player, you can find more useful configurations in the [documentation](https://bambuser.com/docs/live/player-api-reference/#constants)
-3. `videoType` - You can use `BambuserVideoAsset.Live(id)` passing the id as your show id, or `BambuserVideoAsset.Shoppable(id)` for shoppable video id.
+3. `videoType` - You can use `BambuserVideoAsset.Live(id)` passing the id as your show id, or `BambuserVideoAsset.Shoppable(id)` for shoppable video id. Since 4.0.0 a `BambuserCollectionInfo` is also accepted here, but only for `GetAppearanceView` (see below).
+
+And one optional parameter:
+4. `videoScaleMode` - `BambuserVideoScaleMode.FIT` letterboxes the video, `BambuserVideoScaleMode.FILL` covers the whole player view and crops the overflow. Since 4.0.0 it defaults to `null`, which lets the player's resize events pick the mode (falling back to `FIT`). Set it explicitly if you want a fixed framing.
 
 For `videoPlayerDelegate` you need to Initialize a `BambuserVideoPlayerDelegate` object.
 `BambuserVideoPlayerDelegate` has two methods:
@@ -95,6 +100,114 @@ you can switch between the enums
 In `onVideoStatusChanged` You can receive the status of your player, and you will have reference to some player actions
 1. `BambuserVideoState` is an enum class holds all available video states
 2. `PlayerActions` is your interface to remotely control the player, either in the full mode or PiP mode, it should have (play, pause, mute and unMute) actions.
+
+## Appearance view (Hub-configured layouts)
+
+Available since 4.0.0.
+
+`sdkInstance.GetAppearanceView` renders a collection of shoppable videos using the appearance configured in Bam Hub. The SDK fetches the collection, picks the layout from the appearance's `mode` (grid, row, story or fab), applies its sizing, spacing, autoplay and tap behavior, and loads further pages as the user scrolls. If `mode` is missing or unknown the row layout is used and the state reports `BambuserAppearanceMode.UNKNOWN`.
+
+```kotlin
+val appearanceState = rememberBambuserAppearanceViewState()
+
+sdkInstance.GetAppearanceView(
+    videoConfiguration = BambuserVideoConfiguration(
+        videoType = BambuserCollectionInfo.Playlist(
+            orgId = "<orgId>",
+            componentId = "<placement id from Bam Hub>",
+        ),
+        configuration = mapOf(
+            "playerConfig" to mapOf(
+                "softLimit" to "6",   // appearance override, same keys as the hub
+                "currency" to "USD",  // anything else goes to the web player as-is
+            ),
+            "thumbnail" to mapOf("showPlayButton" to false), // optional, see below
+            "preload" to true,                               // optional, the default
+        ),
+        events = listOf("*"),                        // player events forwarded to the delegate
+        videoScaleMode = BambuserVideoScaleMode.FILL, // optional, every player in the collection
+    ),
+    pageSize = 15,
+    state = appearanceState,
+    appearanceDelegate = object : BambuserAppearanceViewDelegate {
+        override fun onPlayerSelected(item: BambuserAppearanceItem) { /* ... */ }
+    },
+    videoPlayerDelegate = myPlayerDelegate,    // per-player events for every player inside
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+### Parameters
+1. `videoConfiguration` (mandatory) - What to render and how every player in it is set up. Details below.
+2. `videoPlayerDelegate` (mandatory) - Receives events, errors and status changes for every player in the collection, the same `BambuserVideoPlayerDelegate` you use for a single shoppable video.
+3. `pageSize` (optional, default 15) - Number of videos fetched per page. Further pages load automatically when the layout is scrolled past 80% of its content, until the last page or the appearance's soft limit is reached.
+4. `appearanceDelegate` (optional) - Collection-level callbacks, see [Delegate](#delegate).
+5. `state` (optional) - A `BambuserAppearanceViewState` created with `rememberBambuserAppearanceViewState()`, see [State](#state).
+6. `modifier` (optional) - Applied to the view, see [Sizing](#sizing).
+
+### Source
+The configuration's `videoType` must be a `BambuserCollectionInfo`, otherwise the composable throws `IllegalArgumentException`.
+* `BambuserCollectionInfo.Playlist(orgId, componentId)` renders a placement with the appearance configured for it in Bam Hub. The page URL the hub's targeting rules see is derived from the component id.
+* `BambuserCollectionInfo.SKU(orgId, sku)` and `BambuserCollectionInfo.GroupId(orgId, groupId)` render the videos attached to a product or a product group, with whatever appearance the response carries.
+
+Changing the configuration starts the collection over from page 1.
+
+### Overrides
+A map under `configuration["playerConfig"]` takes the keys the hub sends, for example `mode`, `focusMode`, `autoplay`, `cornerRadius`, `playerWidth`, `playlistGap` and `softLimit`.
+* Precedence, lowest first: the collection's `playerConfig`, the default appearance, the app appearance, then this map.
+* Null and blank values in it are ignored, so an unset key falls back to the resolved value instead of clearing it.
+* Entries that are not appearance keys, such as `currency`, `locale` or `buttons`, are forwarded unchanged to every player's web configuration, the same as `playerConfig` on a single shoppable player. `currency` is mandatory if you hydrate products.
+* Any other top-level key of `configuration` is copied into every player's configuration as well.
+
+### Players
+`events` and `videoScaleMode` on the configuration apply to every player the collection creates, inline and fullscreen, exactly as they do for a single shoppable player. Product hydration works the same way too: answer `provide-product-data` in `onNewEventReceived` with `viewAction.invoke("updateProductWithData", ...)` for each product id the player asks about.
+
+### Thumbnail
+A map under `configuration["thumbnail"]` tunes the preview thumbnail of every player, with the same keys as a single shoppable player: `enabled`, `showPlayButton`, `showLoadingIndicator`, `preview` and `contentMode` (`scaleToFill`, `scaleAspectFit` or `scaleAspectFill`). `enabled = false` hides the thumbnail where the SDK would show one, and `showPlayButton` wins over the hub's setting. The FAB and the fullscreen overlay never show a thumbnail, whatever the map says.
+
+### Preload
+`configuration["preload"]` defaults to `true`: every player boots the web player behind its thumbnail so playback starts at once. Set it to `false` to defer that until the player is tapped or played, which saves memory and network on long collections.
+
+### State
+`rememberBambuserAppearanceViewState()` returns a `BambuserAppearanceViewState` the SDK keeps up to date as Compose state:
+* `mode` - the resolved `BambuserAppearanceMode` (`GRID`, `ROW`, `STORY`, `FAB` or `UNKNOWN`).
+* `videoIds` - the list of video IDs currently loaded.
+* `pagination` - a `BambuserAppearancePagination` (`page`, `pageSize`, `total`, `totalPages`), or `null` before the first page loads.
+
+Use it to size or decorate the container per layout. The handle lives as long as the composable that created it.
+
+### Delegate
+All methods of `BambuserAppearanceViewDelegate` have empty defaults and run on the main thread. Item callbacks carry a `BambuserAppearanceItem` with the video's `index` in `videoIds`, its `playerId` and its `metadata` (`VideoMetadata`: id, title, preview, length, hasAudio).
+
+```kotlin
+object : BambuserAppearanceViewDelegate {
+    // Paging. Page 1 loads after the composable enters the composition, so these start at 1.
+    override fun onWillLoadPage(page: Int) {}
+    override fun onPageLoaded(page: Int, totalPages: Int?) {}
+    override fun onPageFailedToLoad(page: Int, error: Exception) {}
+
+    // A player was tapped. The SDK then does what the appearance's focusMode says.
+    override fun onPlayerSelected(item: BambuserAppearanceItem) {}
+
+    // Fullscreen overlay, when focusMode opens one. Exit reports the video the user ended on.
+    override fun onEnterFullscreen(item: BambuserAppearanceItem) {}
+    override fun onExitFullscreen(item: BambuserAppearanceItem) {}
+
+    // The active video changed: cascade moved on, FAB advanced, or the user paged in fullscreen.
+    override fun onCurrentChanged(item: BambuserAppearanceItem) {}
+
+    // The collection closed itself, for example from the FAB close button.
+    override fun onDismiss() {}
+}
+```
+
+### Sizing
+Grid fills the space given by `modifier`. Row and story take the full width and size their height from the appearance's player size. The FAB floats over the content inside the bounds of `modifier`, sizes itself and has its own close button.
+
+### Lifecycle
+The collection lives as long as the composable is in the composition. Leaving the composition cancels any fetch in flight and releases the players; there is nothing to clean up. `onDismiss` only fires when the collection closes itself, not when it leaves the composition.
+
+> **Important:** the FAB behaves and looks different from the other layouts. Create a separate appearance in Bam Hub for it, on its own placement, instead of reusing the one for grid, row or story.
 
 ## Getting a list of shoppable videos
 In order to get a list of shoppable videos, you can use `sdkInstance.getShoppableVideoPlayerCollectionMetadata`
